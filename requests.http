@@ -1,0 +1,84 @@
+### 1) GET / -> mensagem de boas-vindas
+GET http://localhost:3000/
+
+# Resposta esperada (200):
+# API de Tarefas no ar
+
+
+### 2) GET /tarefas -> lista todas as tarefas
+GET http://localhost:3000/tarefas
+
+# Resposta esperada (200):
+# [
+#   { "id": 1, "titulo": "Estudar Express.js", "concluida": false },
+#   { "id": 2, "titulo": "Fazer os exercícios", "concluida": false },
+#   { "id": 3, "titulo": "Revisar middlewares", "concluida": true }
+# ]
+
+
+### 3) GET /tarefas/:id -> uma tarefa específica
+GET http://localhost:3000/tarefas/1
+
+# Resposta esperada (200):
+# { "id": 1, "titulo": "Estudar Express.js", "concluida": false }
+
+### 3b) id que não existe -> 404
+GET http://localhost:3000/tarefas/999
+
+# Resposta esperada (404):
+# { "erro": "Tarefa com id 999 não encontrada" }
+
+
+### 4) GET /tarefas?concluida=true -> filtra pelas concluídas
+GET http://localhost:3000/tarefas?concluida=true
+
+# Resposta esperada (200):
+# [ { "id": 3, "titulo": "Revisar middlewares", "concluida": true } ]
+
+
+### 5) POST /tarefas -> cria nova tarefa
+POST http://localhost:3000/tarefas
+Content-Type: application/json
+
+{
+  "titulo": "Aprender express.Router()"
+}
+
+# Resposta esperada (201):
+# { "id": 4, "titulo": "Aprender express.Router()", "concluida": false }
+
+### 5b) POST /tarefas sem titulo -> erro de validação
+POST http://localhost:3000/tarefas
+Content-Type: application/json
+
+{}
+
+# Resposta esperada (400):
+# { "erro": "Campo \"titulo\" é obrigatório" }
+
+
+### Extra) POST /tarefas/segura -> encadeamento auth + validação + log
+POST http://localhost:3000/tarefas/segura
+Content-Type: application/json
+Authorization: Bearer segredo123
+
+{
+  "titulo": "Tarefa criada com autenticação"
+}
+
+# Resposta esperada (201):
+# {
+#   "mensagem": "Tarefa criada com segurança",
+#   "tarefa": { "id": 4, "titulo": "Tarefa criada com autenticação", "concluida": false }
+# }
+
+### Extra b) sem o header Authorization -> 401
+POST http://localhost:3000/tarefas/segura
+Content-Type: application/json
+
+{
+  "titulo": "Não deveria ser criada"
+}
+
+# Resposta esperada (401):
+# { "erro": "Não autenticado. Envie o header Authorization correto." }
